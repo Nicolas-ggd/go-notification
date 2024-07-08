@@ -10,15 +10,17 @@ This microservice is designed to handle notifications using Go, NATS, and WebSoc
 ## Installation
 1. Clone repository:
 
-```bash
-  git clone https://github.com/Nicolas-ggd/go-notification.git
-```
+   ```bash
+     git clone https://github.com/Nicolas-ggd/go-notification.git
+   ```
 
 2. Navigate to the project directory:
-```bash
-  cd go-notifications
-```
+   ```bash
+     cd go-notifications
+   ```
+   
 3. Install dependencies:
+
 ```bash
   go mod download
 ```
@@ -43,23 +45,23 @@ Start the service with the following command:
 1. Broadcast Notification:
    Send a message to all connected clients.
 
-```json
-{
-  "type": "broadcast",
-  "message": "This is a broadcast notification."
-}
-```
+   ```json
+   {
+     "type": "broadcast",
+     "message": "This is a broadcast notification."
+   }
+   ```
 
 2. Targeted Notification:
    Send a message to specific clients.
 
-```json
-{
-  "type": "targeted",
-  "clients": ["1", "2"], // Client id must be provided as a array of string
-  "message": "This is a targeted notification."
-}
-```
+   ```json
+   {
+     "type": "targeted",
+     "clients": ["1", "2"],
+     "message": "This is a targeted notification."
+   }
+   ```
 
 ## Example Client
 Here's a simple example of a client connecting to the WebSocket server and handling messages:
