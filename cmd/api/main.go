@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"github.com/Nicolas-ggd/go-notification/pkg/config"
 	"github.com/Nicolas-ggd/go-notification/pkg/handlers"
 	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
@@ -11,7 +12,12 @@ import (
 )
 
 func main() {
-	nc, err := storage.NewNatsConn()
+	httpPort := flag.String("http-server-port", "8080", "a string")
+	natsUrl := flag.String("nats-url", "nats://127.0.0.1:4222", "a string")
+
+	flag.Parse()
+
+	nc, err := storage.NewNatsConn(*natsUrl)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -50,7 +56,7 @@ func main() {
 
 	http.HandleFunc("GET /ws", wss.ServeWs)
 
-	err = http.ListenAndServe(":8080", nil)
+	err = http.ListenAndServe(":"+*httpPort, nil)
 	if err != nil {
 		log.Fatal(err)
 	}
