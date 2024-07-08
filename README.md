@@ -21,9 +21,9 @@ This microservice is designed to handle notifications using Go, NATS, and WebSoc
    
 3. Install dependencies:
 
-```bash
-  go mod download
-```
+   ```bash
+     go mod download
+   ```
 
 ## Configuration
 You can configure the application using command-line arguments. The following parameters are available:
