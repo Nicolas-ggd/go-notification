@@ -9,6 +9,7 @@ This microservice is designed to handle notifications using Go, NATS, and WebSoc
 
 ## Installation
 1. Clone repository:
+
 ```bash
   git clone https://github.com/Nicolas-ggd/go-notification.git
 ```
