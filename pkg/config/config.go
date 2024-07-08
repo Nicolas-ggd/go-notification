@@ -3,6 +3,7 @@ package config
 const (
 	StreamName = "NOTIFICATION"
 
-	SubjectSendNotification = "NOTIFICATION.send"
-	SubjectVersion          = "0.0.1"
+	SubjectBroadcastNotification = "NOTIFICATION.send-to-all"
+	SubjectClientNotification    = "NOTIFICATION.send-to-clients"
+	SubjectVersion               = "0.0.1"
 )

@@ -21,8 +21,23 @@ func main() {
 	_, err = micro.AddService(nc, micro.Config{
 		Name: config.StreamName,
 		Endpoint: &micro.EndpointConfig{
-			Subject:    config.SubjectSendNotification,
-			Handler:    handlers.SendNotification(wss),
+			Subject:    config.SubjectBroadcastNotification,
+			Handler:    handlers.BroadcastNotification(wss),
+			Metadata:   nil,
+			QueueGroup: "",
+		},
+		Version:     config.SubjectVersion,
+		Description: "",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = micro.AddService(nc, micro.Config{
+		Name: config.StreamName,
+		Endpoint: &micro.EndpointConfig{
+			Subject:    config.SubjectClientNotification,
+			Handler:    handlers.ClientBasedNotification(wss),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
