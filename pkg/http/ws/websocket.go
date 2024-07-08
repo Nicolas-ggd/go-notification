@@ -119,14 +119,14 @@ func (ws *Websocket) ServeWs(res http.ResponseWriter, req *http.Request) {
 
 // SendEvent function send events to the client
 func (ws *Websocket) SendEvent(clients []string, data []byte) {
-	var m models.Notification
+	var m request.NotificationRequest
 
 	err := json.Unmarshal(data, &m)
 	if err != nil {
 		log.Println(err)
 	}
 
-	mr := request.NotificationRequest{
+	mr := models.Notification{
 		Message: m.Message,
 		Time:    m.Time,
 		Type:    m.Type,
