@@ -62,6 +62,19 @@ Start the service with the following command:
      "message": "This is a targeted notification."
    }
    ```
+   
+3. Command line notification request using NATS:
+   Send a message to all connected clients
+   
+   ```shell
+   nats req NOTIFICATION.send-to-all '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z"}'
+   ```
+   
+   Send a message to specific clients
+
+   ```shell
+   nats req NOTIFICATION.send-to-clients '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "clients": ["1", "2"]}'
+   ```
 
 ## Example Client
 Here's a simple example of a client connecting to the WebSocket server and handling messages:
