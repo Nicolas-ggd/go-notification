@@ -27,8 +27,8 @@ This microservice is designed to handle notifications using Go, NATS, and WebSoc
 
 ## Configuration
 You can configure the application using command-line arguments. The following parameters are available:
-- --nats-url: The URL of the NATS server (default: nats://localhost:4222).
-- --http-server-port: The port for the HTTP server (default: 8080).
+- --nats-url: The URL of the NATS server (default: nats://nats:4222).
+- --http-server-port: The port for the HTTP server (default: 8741).
 
 Example:
 ```bash
