@@ -7,3 +7,8 @@ const (
 	SubjectClientNotification    = "NOTIFICATION.send-to-clients"
 	SubjectVersion               = "0.0.1"
 )
+
+const (
+	MigrationURL = "file://internal/migrations"
+	DatabaseName = "sqlite3"
+)
