@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
 	"github.com/Nicolas-ggd/go-notification/pkg/services"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
@@ -14,13 +15,13 @@ type MicroHandler struct {
 	NotificationService services.INotificationService
 }
 
-func NewMicroHandler(notificationService services.INotificationService) *MicroHandler {
+func NewMicroHandler(service *services.Service) *MicroHandler {
 	return &MicroHandler{
-		NotificationService: notificationService,
+		NotificationService: service.NotificationService,
 	}
 }
 
-func BroadcastNotification(wss *ws.Websocket) micro.HandlerFunc {
+func (mh *MicroHandler) BroadcastNotification(wss *ws.Websocket) micro.HandlerFunc {
 	return func(r micro.Request) {
 		var m models.Notification
 
@@ -29,11 +30,18 @@ func BroadcastNotification(wss *ws.Websocket) micro.HandlerFunc {
 			log.Println(err)
 		}
 
-		wss.BroadcastEvent(r.Data())
+		model, err := mh.NotificationService.Insert(&m)
+		if err != nil {
+			log.Println(err)
+		}
+
+		fmt.Printf("%+v\n", model)
+
+		wss.BroadcastEvent(model)
 	}
 }
 
-func ClientBasedNotification(wss *ws.Websocket) micro.HandlerFunc {
+func (mh *MicroHandler) ClientBasedNotification(wss *ws.Websocket) micro.HandlerFunc {
 	return func(r micro.Request) {
 		var m request.NotificationRequest
 
@@ -42,6 +50,11 @@ func ClientBasedNotification(wss *ws.Websocket) micro.HandlerFunc {
 			log.Println(err)
 		}
 
-		wss.SendEvent(m.Clients, r.Data())
+		model, err := mh.NotificationService.Insert(m.ToModel())
+		if err != nil {
+			log.Println(err)
+		}
+
+		wss.SendEvent(m.Clients, model)
 	}
 }

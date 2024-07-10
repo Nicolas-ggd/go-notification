@@ -64,7 +64,9 @@ To use environment variables for configuration, follow these steps:
    ```json
    {
      "type": "broadcast",
-     "message": "This is a broadcast notification."
+     "message": "This is a broadcast notification.",
+     "time": "2024-04-17T09:00:00Z",
+     "is_view": false
    }
    ```
 
@@ -75,7 +77,9 @@ To use environment variables for configuration, follow these steps:
    {
      "type": "targeted",
      "clients": ["1", "2"],
-     "message": "This is a targeted notification."
+     "message": "This is a targeted notification.",
+     "time": "2024-04-17T09:00:00Z",
+     "is_view": false
    }
    ```
    
@@ -83,13 +87,13 @@ To use environment variables for configuration, follow these steps:
    Send a message to all connected clients
    
    ```shell
-   nats req NOTIFICATION.send-to-all '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z"}'
+   nats req NOTIFICATION.send-to-all '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "is_view": true}'
    ```
    
    Send a message to specific clients
 
    ```shell
-   nats req NOTIFICATION.send-to-clients '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "clients": ["1", "2"]}'
+   nats req NOTIFICATION.send-to-clients '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "clients": ["1", "2"], "is_view": false}'
    ```
 
 ## Example Client

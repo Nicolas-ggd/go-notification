@@ -1,3 +1,6 @@
 .env
 .idea
 notification.db
+notifications
+notification
+notifications.db

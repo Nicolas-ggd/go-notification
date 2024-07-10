@@ -3,59 +3,45 @@ package storage
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"github.com/Nicolas-ggd/go-notification/pkg/config"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"log"
-	"os"
 )
 
 func NewDB() (*sql.DB, error) {
-	dbName, err := removeAndCreateNew("notification")
+	db, err := sql.Open("sqlite3", config.DBName)
 	if err != nil {
 		return nil, err
 	}
 
-	db, err := sql.Open("sqlite3", dbName)
-	if err != nil {
-		return nil, err
-	}
-
-	err = runMigration(db)
-	if err != nil {
+	if err = checkAndRunMigration(db); err != nil {
 		return nil, err
 	}
 
 	return db, nil
 }
 
-func removeAndCreateNew(name string) (string, error) {
-	err := os.Remove(name)
-	if err != nil && !os.IsNotExist(err) {
-		return "", err
-	}
-
-	log.Printf("Creating new sqlite-%s.db", name)
-
-	file, err := os.Create(fmt.Sprintf("%s.db", name))
+func checkAndRunMigration(db *sql.DB) error {
+	// check if tables exist
+	_, err := db.Exec("SELECT 1 FROM notifications LIMIT 1;")
 	if err != nil {
-		log.Fatal(err.Error())
-	}
-	err = file.Close()
-	if err != nil {
-		return "", err
+		// if the table doesn't exist, run the migrations
+		log.Println("Running migrations as tables don't exist")
+		err = runMigration(db)
+		if err != nil {
+			return err
+		}
+	} else {
+		log.Println("Database and tables already exist")
 	}
 
-	log.Printf("sqlite-%s.db created", name)
-
-	return fmt.Sprintf("%s.db", name), nil
+	return nil
 }
 
 func runMigration(db *sql.DB) error {
 	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{
-		NoTxWrap:     false,
 		DatabaseName: config.DatabaseName,
 	})
 	if err != nil {

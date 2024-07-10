@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
-	"github.com/Nicolas-ggd/go-notification/pkg/storage/models/request"
 	"log"
 	"net/http"
 	"strconv"
@@ -118,21 +117,8 @@ func (ws *Websocket) ServeWs(res http.ResponseWriter, req *http.Request) {
 }
 
 // SendEvent function send events to the client
-func (ws *Websocket) SendEvent(clients []string, data []byte) {
-	var m request.NotificationRequest
-
-	err := json.Unmarshal(data, &m)
-	if err != nil {
-		log.Println(err)
-	}
-
-	mr := models.Notification{
-		Message: m.Message,
-		Time:    m.Time,
-		Type:    m.Type,
-	}
-
-	v, err := json.Marshal(&mr)
+func (ws *Websocket) SendEvent(clients []string, model *models.Notification) {
+	v, err := json.Marshal(&model)
 	if err != nil {
 		log.Printf("Can't marshal action data")
 		return
@@ -158,21 +144,8 @@ func (ws *Websocket) SendEvent(clients []string, data []byte) {
 }
 
 // BroadcastEvent function send events in broadcast
-func (ws *Websocket) BroadcastEvent(data []byte) {
-	var m models.Notification
-
-	err := json.Unmarshal(data, &m)
-	if err != nil {
-		log.Println(err)
-	}
-
-	mr := request.NotificationRequest{
-		Message: m.Message,
-		Time:    m.Time,
-		Type:    m.Type,
-	}
-
-	value, err := json.Marshal(&mr)
+func (ws *Websocket) BroadcastEvent(model *models.Notification) {
+	value, err := json.Marshal(&model)
 	if err != nil {
 		log.Printf("Can't marshal broadcast data")
 		return
