@@ -50,28 +50,8 @@ To use environment variables for configuration, follow these steps:
    cp .env.example .env
    nano .env
    ```
-   
-2. Create a load_env.sh script to load environment variables:
 
-   ```shell
-   #!/bin/bash
-   
-   # Load environment variables from .env file
-   if [ -f .env ]; then
-    export $(grep -v '^#' .env | xargs)
-   else
-    echo ".env file not found. Please create it based on .env.example"
-    exit 1
-   fi
-   ```
-   
-3. Make the load_env.sh script executable:
-
-   ```shell
-   chmod +x load_env.sh
-   ```
-
-4. Load the environment variables:
+2. After creating environment file, load the environment variables:
 
    ```shell
    ./load_env.sh
