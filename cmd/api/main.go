@@ -1,10 +1,13 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"github.com/Nicolas-ggd/go-notification/pkg/config"
-	"github.com/Nicolas-ggd/go-notification/pkg/handlers"
 	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
+	handlers "github.com/Nicolas-ggd/go-notification/pkg/micro_handlers"
+	"github.com/Nicolas-ggd/go-notification/pkg/repository"
+	"github.com/Nicolas-ggd/go-notification/pkg/services"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/micro"
@@ -24,6 +27,17 @@ func main() {
 		return
 	}
 
+	db, err := storage.NewDB()
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer func(db *sql.DB) {
+		err = db.Close()
+		if err != nil {
+			log.Fatal(err)
+		}
+	}(db)
+
 	nc, err := storage.NewNatsConn(*natsUrl)
 	if err != nil {
 		log.Fatal(err)
@@ -35,6 +49,11 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	repositories := repository.NewRepository(db)
+	service := services.NewService(repositories)
+
+	_ = handlers.NewMicroHandler(service)
 
 	http.HandleFunc("GET /ws", wss.ServeWs)
 

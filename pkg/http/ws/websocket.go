@@ -3,8 +3,8 @@ package ws
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Nicolas-ggd/go-notification/pkg/models"
-	"github.com/Nicolas-ggd/go-notification/pkg/models/request"
+	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
+	"github.com/Nicolas-ggd/go-notification/pkg/storage/models/request"
 	"log"
 	"net/http"
 	"strconv"
