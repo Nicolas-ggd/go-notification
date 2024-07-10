@@ -27,8 +27,8 @@ This microservice is designed to handle notifications using Go, NATS, and WebSoc
 
 ## Configuration
 You can configure the application using command-line arguments. The following parameters are available:
-- --nats-url: The URL of the NATS server (default: nats://localhost:4222).
-- --http-server-port: The port for the HTTP server (default: 8080).
+- --nats-url: The URL of the NATS server (default: nats://nats:4222).
+- --http-server-port: The port for the HTTP server (default: 8741).
 
 Example:
 ```bash
@@ -41,6 +41,42 @@ Start the service with the following command:
   go run ./cmd/api http-server-port=5432 nats-url=nats://127.0.0.1:4222
 ```
 
+## Environment Variables
+To use environment variables for configuration, follow these steps:
+
+1. Copy the .env.example file to .env and fill in your environment variables:
+
+   ```shell
+   cp .env.example .env
+   nano .env
+   ```
+   
+2. Create a load_env.sh script to load environment variables:
+
+   ```shell
+   #!/bin/bash
+   
+   # Load environment variables from .env file
+   if [ -f .env ]; then
+    export $(grep -v '^#' .env | xargs)
+   else
+    echo ".env file not found. Please create it based on .env.example"
+    exit 1
+   fi
+   ```
+   
+3. Make the load_env.sh script executable:
+
+   ```shell
+   chmod +x load_env.sh
+   ```
+
+4. Load the environment variables:
+
+   ```shell
+   ./load_env.sh
+   ```
+   
 ### Sending Notifications
 1. Broadcast Notification:
    Send a message to all connected clients.

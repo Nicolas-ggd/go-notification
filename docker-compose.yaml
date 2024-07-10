@@ -1,0 +1,31 @@
+version: "4.9"
+networks:
+  fullstack:
+    driver: bridge
+
+services:
+  nats:
+    image: nats
+    ports:
+      - "8222:8222"
+    command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --http_port 8222 "
+    networks:
+      - fullstack
+  app:
+    networks:
+      - fullstack
+    container_name: go-notifications
+    image: go-notifications:latest
+    restart: unless-stopped
+    ports:
+      - '8741:8741'
+    volumes:
+      - api:/usr/src/app/
+    depends_on:
+      - nats
+volumes:
+  api:
+  redis_db:
+  postgres_db:
+  minio_data:
+    driver: local

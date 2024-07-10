@@ -9,13 +9,19 @@ import (
 	"github.com/nats-io/nats.go/micro"
 	"log"
 	"net/http"
+	"os"
 )
 
 func main() {
-	httpPort := flag.String("http-server-port", "8080", "a string")
-	natsUrl := flag.String("nats-url", "nats://127.0.0.1:4222", "a string")
+	httpPort := flag.String("http-server-port", "8741", "a string")
+	natsUrl := flag.String("nats-url", "nats://nats:4222", "a string")
 
 	flag.Parse()
+
+	err := os.Setenv("NATS_URL", *natsUrl)
+	if err != nil {
+		return
+	}
 
 	nc, err := storage.NewNatsConn(*natsUrl)
 	if err != nil {
