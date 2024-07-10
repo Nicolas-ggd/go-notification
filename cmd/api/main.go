@@ -50,10 +50,7 @@ func main() {
 
 	notificationHandler := handlers.NewMicroHandler(service)
 
-	err = microServices(nc, wss, notificationHandler)
-	if err != nil {
-		log.Fatal(err)
-	}
+	microServices(nc, wss, notificationHandler)
 
 	http.HandleFunc("GET /ws", wss.ServeWs)
 
@@ -63,7 +60,7 @@ func main() {
 	}
 }
 
-func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHandler) error {
+func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHandler) {
 	_, err := micro.AddService(nc, micro.Config{
 		Name: config.StreamName,
 		Endpoint: &micro.EndpointConfig{
@@ -94,5 +91,18 @@ func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHand
 		log.Fatal(err)
 	}
 
-	return nil
+	_, err = micro.AddService(nc, micro.Config{
+		Name: config.StreamName,
+		Endpoint: &micro.EndpointConfig{
+			Subject:    config.SubjectNotificationList,
+			Handler:    handler.NotificationList(wss),
+			Metadata:   nil,
+			QueueGroup: "",
+		},
+		Version:     config.SubjectVersion,
+		Description: "",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 }

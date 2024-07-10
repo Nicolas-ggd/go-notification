@@ -3,10 +3,12 @@ package services
 import (
 	"github.com/Nicolas-ggd/go-notification/pkg/repository"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
+	metakit "github.com/Nicolas-ggd/gorm-metakit"
 )
 
 type INotificationService interface {
 	Insert(model *models.Notification) (*models.Notification, error)
+	List(meta *metakit.Metadata) (*[]models.Notification, *metakit.Metadata, error)
 }
 
 type NotificationService struct {
@@ -26,4 +28,13 @@ func (ns *NotificationService) Insert(model *models.Notification) (*models.Notif
 	}
 
 	return model, nil
+}
+
+func (ns *NotificationService) List(meta *metakit.Metadata) (*[]models.Notification, *metakit.Metadata, error) {
+	model, meta, err := ns.notificationRepository.List(meta)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return model, meta, nil
 }
