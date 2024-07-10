@@ -6,6 +6,7 @@ import (
 	"github.com/Nicolas-ggd/go-notification/pkg/handlers"
 	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage"
+	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/micro"
 	"log"
 	"net/http"
@@ -30,7 +31,21 @@ func main() {
 
 	wss := ws.NewWebsocket()
 
-	_, err = micro.AddService(nc, micro.Config{
+	err = microServices(nc, wss)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	http.HandleFunc("GET /ws", wss.ServeWs)
+
+	err = http.ListenAndServe(":"+*httpPort, nil)
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
+func microServices(nc *nats.Conn, wss *ws.Websocket) error {
+	_, err := micro.AddService(nc, micro.Config{
 		Name: config.StreamName,
 		Endpoint: &micro.EndpointConfig{
 			Subject:    config.SubjectBroadcastNotification,
@@ -60,10 +75,5 @@ func main() {
 		log.Fatal(err)
 	}
 
-	http.HandleFunc("GET /ws", wss.ServeWs)
-
-	err = http.ListenAndServe(":"+*httpPort, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+	return nil
 }
