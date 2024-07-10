@@ -11,7 +11,9 @@ const (
 )
 
 type Notification struct {
+	ID      uint      `json:"id"`
 	Type    string    `json:"type"`
 	Message string    `json:"message"`
 	Time    time.Time `json:"time"`
+	IsView  bool      `json:"is_view"`
 }
