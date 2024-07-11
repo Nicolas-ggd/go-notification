@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
+	"github.com/Nicolas-ggd/go-notification/pkg/storage/models/request"
 	metakit "github.com/Nicolas-ggd/gorm-metakit"
 )
 
@@ -53,4 +54,24 @@ func (r *NotificationRepository) List(meta *metakit.Metadata) (*[]models.Notific
 	}
 
 	return &model, meta, nil
+}
+
+func (r *NotificationRepository) Update(model *request.ViewNotificationRequest) error {
+	query := `UPDATE notifications SET is_view=$1 WHERE id=$2;`
+
+	res, err := r.DB.Exec(query, model.IsView, model.ID)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return sql.ErrNoRows
+	}
+
+	return nil
 }

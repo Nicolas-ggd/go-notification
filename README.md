@@ -96,6 +96,12 @@ To use environment variables for configuration, follow these steps:
    nats req NOTIFICATION.send-to-clients '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "clients": ["1", "2"], "is_view": false}'
    ```
 
+   Notification is viewed, so send event to update record
+   
+   ```shell
+   nats req NOTIFICATION.viewed '{"id": 1, "is_view": true}'
+   ```
+
 ## Example Client
 Here's a simple example of a client connecting to the WebSocket server and handling messages:
 
