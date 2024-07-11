@@ -3,7 +3,6 @@ package storage
 import (
 	"database/sql"
 	"errors"
-	"github.com/Nicolas-ggd/go-notification/pkg/config"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
@@ -11,7 +10,7 @@ import (
 )
 
 func NewDB() (*sql.DB, error) {
-	db, err := sql.Open("sqlite3", config.DBName)
+	db, err := sql.Open("sqlite3", DBName)
 	if err != nil {
 		return nil, err
 	}
@@ -42,13 +41,13 @@ func checkAndRunMigration(db *sql.DB) error {
 
 func runMigration(db *sql.DB) error {
 	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{
-		DatabaseName: config.DatabaseName,
+		DatabaseName: DatabaseName,
 	})
 	if err != nil {
 		return err
 	}
 
-	m, err := migrate.NewWithDatabaseInstance(config.MigrationURL, config.DatabaseName, driver)
+	m, err := migrate.NewWithDatabaseInstance(MigrationURL, DatabaseName, driver)
 	if err != nil {
 		return err
 	}
