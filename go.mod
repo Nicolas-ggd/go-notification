@@ -3,7 +3,7 @@ module github.com/Nicolas-ggd/go-notification
 go 1.22.2
 
 require (
-	github.com/Nicolas-ggd/gorm-metakit v0.5.7
+	github.com/Nicolas-ggd/gorm-metakit v0.5.8
 	github.com/golang-migrate/migrate/v4 v4.17.1
 	github.com/gorilla/websocket v1.5.3
 	github.com/nats-io/nats.go v1.36.0

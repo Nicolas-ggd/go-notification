@@ -104,4 +104,19 @@ func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHand
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	_, err = micro.AddService(nc, micro.Config{
+		Name: handlers.StreamName,
+		Endpoint: &micro.EndpointConfig{
+			Subject:    handlers.SubjectNotificationViewed,
+			Handler:    handler.NotificationViewed(wss),
+			Metadata:   nil,
+			QueueGroup: "",
+		},
+		Version:     handlers.SubjectVersion,
+		Description: "",
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
 }

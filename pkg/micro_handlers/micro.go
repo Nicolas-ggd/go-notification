@@ -72,3 +72,19 @@ func (mh *MicroHandler) NotificationList(wss *ws.Websocket) micro.HandlerFunc {
 		fmt.Printf("%+v\n", meta)
 	}
 }
+
+func (mh *MicroHandler) NotificationViewed(wss *ws.Websocket) micro.HandlerFunc {
+	return func(r micro.Request) {
+		var m request.IsViewNotificationRequest
+
+		err := json.Unmarshal(r.Data(), &m)
+		if err != nil {
+			log.Println(err)
+		}
+
+		err = mh.NotificationService.Update(&m)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+}
