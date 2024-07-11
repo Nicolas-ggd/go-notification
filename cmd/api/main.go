@@ -3,7 +3,6 @@ package main
 import (
 	"database/sql"
 	"flag"
-	"github.com/Nicolas-ggd/go-notification/pkg/config"
 	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
 	handlers "github.com/Nicolas-ggd/go-notification/pkg/micro_handlers"
 	"github.com/Nicolas-ggd/go-notification/pkg/repository"
@@ -62,14 +61,14 @@ func main() {
 
 func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHandler) {
 	_, err := micro.AddService(nc, micro.Config{
-		Name: config.StreamName,
+		Name: handlers.StreamName,
 		Endpoint: &micro.EndpointConfig{
-			Subject:    config.SubjectBroadcastNotification,
+			Subject:    handlers.SubjectBroadcastNotification,
 			Handler:    handler.BroadcastNotification(wss),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
-		Version:     config.SubjectVersion,
+		Version:     handlers.SubjectVersion,
 		Description: "",
 	})
 	if err != nil {
@@ -77,14 +76,14 @@ func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHand
 	}
 
 	_, err = micro.AddService(nc, micro.Config{
-		Name: config.StreamName,
+		Name: handlers.StreamName,
 		Endpoint: &micro.EndpointConfig{
-			Subject:    config.SubjectClientNotification,
+			Subject:    handlers.SubjectClientNotification,
 			Handler:    handler.ClientBasedNotification(wss),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
-		Version:     config.SubjectVersion,
+		Version:     handlers.SubjectVersion,
 		Description: "",
 	})
 	if err != nil {
@@ -92,14 +91,14 @@ func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHand
 	}
 
 	_, err = micro.AddService(nc, micro.Config{
-		Name: config.StreamName,
+		Name: handlers.StreamName,
 		Endpoint: &micro.EndpointConfig{
-			Subject:    config.SubjectNotificationList,
+			Subject:    handlers.SubjectNotificationList,
 			Handler:    handler.NotificationList(wss),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
-		Version:     config.SubjectVersion,
+		Version:     handlers.SubjectVersion,
 		Description: "",
 	})
 	if err != nil {

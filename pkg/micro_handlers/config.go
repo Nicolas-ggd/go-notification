@@ -1,4 +1,4 @@
-package config
+package handlers
 
 const (
 	StreamName = "NOTIFICATION"
@@ -7,10 +7,4 @@ const (
 	SubjectClientNotification    = "NOTIFICATION.send-to-clients"
 	SubjectNotificationList      = "NOTIFICATION.list"
 	SubjectVersion               = "0.0.1"
-)
-
-const (
-	MigrationURL = "file://internal/migrations"
-	DatabaseName = "sqlite3"
-	DBName       = "notifications"
 )
