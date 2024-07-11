@@ -1,5 +1,5 @@
 # Notification Microservice
-This microservice is designed to handle notifications using Go, NATS, and WebSocket. Clients can connect via WebSocket and receive notifications either for all users or for specific clients.
+This microservice is designed to handle system notifications using Go, NATS, and WebSocket. Clients can connect via WebSocket and receive notifications either for all users or for specific clients.
 
 ## Features
 - WebSocket Connectivity: It lets clients to access the service over WebSocket.
