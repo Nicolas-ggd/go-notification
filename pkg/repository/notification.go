@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
+	metakit "github.com/Nicolas-ggd/gorm-metakit"
 )
 
 type NotificationRepository struct {
@@ -28,4 +29,28 @@ func (r *NotificationRepository) Insert(model *models.Notification) (*models.Not
 	}
 
 	return model, nil
+}
+
+func (r *NotificationRepository) List(meta *metakit.Metadata) (*[]models.Notification, *metakit.Metadata, error) {
+	var model []models.Notification
+
+	row := r.DB.QueryRow("SELECT COUNT(*) FROM notifications")
+	err := row.Scan(&meta.TotalRows)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	query := "SELECT * FROM notifications"
+	rows, err := metakit.SPaginate(r.DB, query, meta)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	meta.SortDirectionParams()
+	for rows.Next() {
+		var item models.Notification
+		model = append(model, item)
+	}
+
+	return &model, meta, nil
 }
