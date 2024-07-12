@@ -1,4 +1,4 @@
-package handlers
+package microhandler
 
 const (
 	StreamName = "NOTIFICATION"

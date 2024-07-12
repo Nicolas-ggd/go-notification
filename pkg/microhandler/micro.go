@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 TOMIOKA
 //
-// This file is part of the go-notification project.
+// This file is part of the gonotification project.
 
-package handlers
+package microhandler
 
 import (
 	"encoding/json"
@@ -47,7 +47,7 @@ func (mh *MicroHandler) BroadcastNotification() micro.HandlerFunc {
 				log.Println(err)
 			}
 
-			// Push the go-notification into the priority queue
+			// Push the gonotification into the priority queue
 			mh.PriorityQueue.Push(&queue.NotificationHeap{
 				ID:      model.ID,
 				Type:    model.Type,
@@ -77,7 +77,7 @@ func (mh *MicroHandler) ClientBasedNotification() micro.HandlerFunc {
 				log.Println(err)
 			}
 
-			// Push the go-notification into the priority queue
+			// Push the gonotification into the priority queue
 			mh.PriorityQueue.Push(&queue.NotificationHeap{
 				ID:      model.ID,
 				Type:    model.Type,
@@ -132,7 +132,7 @@ func (mh *MicroHandler) processQueue() {
 			IsView:  notification.IsView,
 		}
 
-		// check if there are specific clients to send the go-notification to
+		// check if there are specific clients to send the gonotification to
 		if len(notification.Clients) > 0 {
 			// send event to specific clients
 			mh.wss.SendEvent(notification.Clients, model)

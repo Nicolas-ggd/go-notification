@@ -33,13 +33,13 @@ You can configure the application using command-line arguments. The following pa
 
 Example:
 ```bash
-  go run ./cmd/go-notification http-server-port=5432 nats-url=nats://127.0.0.1:4222
+  go run ./cmd/gonotification http-server-port=5432 nats-url=nats://127.0.0.1:4222
 ```
 
 ## Usage
 Start the service with the following command:
 ```bash
-  go run ./cmd/go-notification http-server-port=5432 nats-url=nats://127.0.0.1:4222
+  go run ./cmd/gonotification http-server-port=5432 nats-url=nats://127.0.0.1:4222
 ```
 
 ## Environment Variables
