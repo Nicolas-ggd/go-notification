@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 // Copyright (c) 2024 TOMIOKA
 //
-// This file is part of the go-notification project.
+// This file is part of the gonotification project.
 
 package app
 
@@ -9,7 +9,7 @@ import (
 	"database/sql"
 	"flag"
 	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
-	handlers "github.com/Nicolas-ggd/go-notification/pkg/micro_handlers"
+	"github.com/Nicolas-ggd/go-notification/pkg/microhandler"
 	"github.com/Nicolas-ggd/go-notification/pkg/queue"
 	"github.com/Nicolas-ggd/go-notification/pkg/repository"
 	"github.com/Nicolas-ggd/go-notification/pkg/services"
@@ -57,7 +57,7 @@ func Run() {
 	repositories := repository.NewRepository(db)
 	service := services.NewService(repositories)
 
-	notificationHandler := handlers.NewMicroHandler(service, priorityQueue, wss)
+	notificationHandler := microhandler.NewMicroHandler(service, priorityQueue, wss)
 
 	microServices(nc, notificationHandler)
 
@@ -70,16 +70,16 @@ func Run() {
 }
 
 // todo: move each service in one package and manage it
-func microServices(nc *nats.Conn, handler *handlers.MicroHandler) {
+func microServices(nc *nats.Conn, handler *microhandler.MicroHandler) {
 	_, err := micro.AddService(nc, micro.Config{
-		Name: handlers.StreamName,
+		Name: microhandler.StreamName,
 		Endpoint: &micro.EndpointConfig{
-			Subject:    handlers.SubjectBroadcastNotification,
+			Subject:    microhandler.SubjectBroadcastNotification,
 			Handler:    handler.BroadcastNotification(),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
-		Version:     handlers.SubjectVersion,
+		Version:     microhandler.SubjectVersion,
 		Description: "",
 	})
 	if err != nil {
@@ -87,14 +87,14 @@ func microServices(nc *nats.Conn, handler *handlers.MicroHandler) {
 	}
 
 	_, err = micro.AddService(nc, micro.Config{
-		Name: handlers.StreamName,
+		Name: microhandler.StreamName,
 		Endpoint: &micro.EndpointConfig{
-			Subject:    handlers.SubjectClientNotification,
+			Subject:    microhandler.SubjectClientNotification,
 			Handler:    handler.ClientBasedNotification(),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
-		Version:     handlers.SubjectVersion,
+		Version:     microhandler.SubjectVersion,
 		Description: "",
 	})
 	if err != nil {
@@ -102,14 +102,14 @@ func microServices(nc *nats.Conn, handler *handlers.MicroHandler) {
 	}
 
 	_, err = micro.AddService(nc, micro.Config{
-		Name: handlers.StreamName,
+		Name: microhandler.StreamName,
 		Endpoint: &micro.EndpointConfig{
-			Subject:    handlers.SubjectNotificationList,
+			Subject:    microhandler.SubjectNotificationList,
 			Handler:    handler.NotificationList(),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
-		Version:     handlers.SubjectVersion,
+		Version:     microhandler.SubjectVersion,
 		Description: "",
 	})
 	if err != nil {
@@ -117,14 +117,14 @@ func microServices(nc *nats.Conn, handler *handlers.MicroHandler) {
 	}
 
 	_, err = micro.AddService(nc, micro.Config{
-		Name: handlers.StreamName,
+		Name: microhandler.StreamName,
 		Endpoint: &micro.EndpointConfig{
-			Subject:    handlers.SubjectNotificationViewed,
+			Subject:    microhandler.SubjectNotificationViewed,
 			Handler:    handler.NotificationViewed(),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
-		Version:     handlers.SubjectVersion,
+		Version:     microhandler.SubjectVersion,
 		Description: "",
 	})
 	if err != nil {
