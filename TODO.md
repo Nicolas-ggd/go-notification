@@ -7,4 +7,6 @@
 
 2. **[ ] Split NATS event functions**
    - **Description**: We need to find place for micro.AddService, now it lives in main.go under the `microServices` function.
+3. **[ ] Write test cases for WS handler**
+   - **Description**: Any testing way is acceptable, you're applied to write test cases using `testify` package, or just use golang build-in package.
     
