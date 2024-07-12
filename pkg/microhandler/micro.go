@@ -8,8 +8,8 @@ package microhandler
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
 	"github.com/Nicolas-ggd/go-notification/pkg/queue"
+	"github.com/Nicolas-ggd/go-notification/pkg/server/ws"
 	"github.com/Nicolas-ggd/go-notification/pkg/services"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models/request"

@@ -8,7 +8,10 @@
      <img width="971" alt="Screenshot 2024-07-12 at 16 06 32" src="https://github.com/user-attachments/assets/34e19f7c-2c53-4947-8564-a8b6e8a76f13">
 
 2. **[ ] Split NATS event functions**
-   - **Description**: We need to find place for micro.AddService, now it lives in main.go under the `microServices` function.
+   - **Description**: We need to find place for micro.AddService, now it lives in `./cmd/gonotification/app/app.go` file, under the `microServices` function.
+
+3. **[ ] HTTP server configuration under the configuration level**
+   - **Description**: It's better to give user possibility to choose use HTTP/1.1 or HTTP/2. Case where user choose to use HTTP/2 we need to accept and parse `PRIVATE KEY` and `Certificate` for HTTP/2. In this case we need `shell` script logic.
 
 ## Medium Priority
 1. **[ ] Write test cases for WS handler**
