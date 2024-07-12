@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
-	"github.com/Nicolas-ggd/go-notification/pkg/queue"
 	"github.com/Nicolas-ggd/go-notification/pkg/services"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models/request"
@@ -15,92 +14,66 @@ import (
 
 type MicroHandler struct {
 	NotificationService services.INotificationService
-	PriorityQueue       *queue.PriorityQueue
-	wss                 *ws.Websocket
 }
 
-func NewMicroHandler(service *services.Service, pr *queue.PriorityQueue, wss *ws.Websocket) *MicroHandler {
+func NewMicroHandler(service *services.Service) *MicroHandler {
 	return &MicroHandler{
 		NotificationService: service.NotificationService,
-		PriorityQueue:       pr,
-		wss:                 wss,
 	}
 }
 
-func (mh *MicroHandler) BroadcastNotification() micro.HandlerFunc {
+func (mh *MicroHandler) BroadcastNotification(wss *ws.Websocket) micro.HandlerFunc {
 	return func(r micro.Request) {
-		var m []models.Notification
+		var m models.Notification
 
 		err := json.Unmarshal(r.Data(), &m)
 		if err != nil {
 			log.Println(err)
 		}
 
-		for _, notification := range m {
-			model, err := mh.NotificationService.Insert(&notification)
-			if err != nil {
-				log.Println(err)
-			}
-
-			// Push the notification into the priority queue
-			mh.PriorityQueue.Push(&queue.NotificationHeap{
-				ID:      model.ID,
-				Type:    model.Type,
-				Message: model.Message,
-				Time:    model.Time,
-				IsView:  model.IsView,
-			})
-		}
-
-		// process queue and send broadcast event
-		mh.processQueue()
-	}
-}
-
-func (mh *MicroHandler) ClientBasedNotification() micro.HandlerFunc {
-	return func(r micro.Request) {
-		var m []request.NotificationRequest
-
-		err := json.Unmarshal(r.Data(), &m)
-		if err != nil {
-			log.Println(err)
-		}
-
-		for _, notification := range m {
-			model, err := mh.NotificationService.Insert(notification.ToModel())
-			if err != nil {
-				log.Println(err)
-			}
-
-			// Push the notification into the priority queue
-			mh.PriorityQueue.Push(&queue.NotificationHeap{
-				ID:      model.ID,
-				Type:    model.Type,
-				Message: model.Message,
-				Time:    model.Time,
-				IsView:  model.IsView,
-				Clients: notification.Clients,
-			})
-		}
-
-		// process queue and send client based event
-		mh.processQueue()
-	}
-}
-
-func (mh *MicroHandler) NotificationList() micro.HandlerFunc {
-	metadata := &metakit.Metadata{Sort: "id"}
-	return func(r micro.Request) {
-		model, _, err := mh.NotificationService.List(metadata)
+		model, err := mh.NotificationService.Insert(&m)
 		if err != nil {
 			log.Println(err)
 		}
 
 		fmt.Printf("%+v\n", model)
+
+		wss.BroadcastEvent(model)
 	}
 }
 
-func (mh *MicroHandler) NotificationViewed() micro.HandlerFunc {
+func (mh *MicroHandler) ClientBasedNotification(wss *ws.Websocket) micro.HandlerFunc {
+	return func(r micro.Request) {
+		var m request.NotificationRequest
+
+		err := json.Unmarshal(r.Data(), &m)
+		if err != nil {
+			log.Println(err)
+		}
+
+		model, err := mh.NotificationService.Insert(m.ToModel())
+		if err != nil {
+			log.Println(err)
+		}
+
+		wss.SendEvent(m.Clients, model)
+	}
+}
+
+func (mh *MicroHandler) NotificationList(wss *ws.Websocket) micro.HandlerFunc {
+	metadata := &metakit.Metadata{Sort: "id"}
+	return func(r micro.Request) {
+		model, meta, err := mh.NotificationService.List(metadata)
+		if err != nil {
+			log.Println(err)
+		}
+
+		fmt.Printf("%+v\n", model)
+		fmt.Printf("%+v\n", meta)
+	}
+}
+
+func (mh *MicroHandler) NotificationViewed(wss *ws.Websocket) micro.HandlerFunc {
 	return func(r micro.Request) {
 		var m request.IsViewNotificationRequest
 
@@ -112,28 +85,6 @@ func (mh *MicroHandler) NotificationViewed() micro.HandlerFunc {
 		err = mh.NotificationService.Update(&m)
 		if err != nil {
 			log.Println(err)
-		}
-	}
-}
-
-func (mh *MicroHandler) processQueue() {
-	for mh.PriorityQueue.Len() > 0 {
-		notification := mh.PriorityQueue.Pop().(*queue.NotificationHeap)
-		model := &models.Notification{
-			ID:      notification.ID,
-			Type:    notification.Type,
-			Message: notification.Message,
-			Time:    notification.Time,
-			IsView:  notification.IsView,
-		}
-
-		// check if there are specific clients to send the notification to
-		if len(notification.Clients) > 0 {
-			// send event to specific clients
-			mh.wss.SendEvent(notification.Clients, model)
-		} else {
-			// Broadcast event to all clients
-			mh.wss.BroadcastEvent(model)
 		}
 	}
 }

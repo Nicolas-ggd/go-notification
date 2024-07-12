@@ -6,7 +6,6 @@ import (
 )
 
 type NotificationRequest struct {
-	ID      uint      `json:"id"`
 	Type    string    `json:"type"`
 	Message string    `json:"message"`
 	Time    time.Time `json:"time"`

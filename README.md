@@ -5,7 +5,6 @@ This microservice is designed to handle system notifications using Go, NATS, and
 - WebSocket Connectivity: It lets clients access the service over WebSocket.
 - Broadcast Notifications: Messages are sent to all connected clients.
 - Targeted Notifications: Messages are sent to specific clients.
-- Priority Notifications: Notifications have different types and priorities (error, warning, info).
 - Easy Configuration: Command-line arguments can be used to configure the application.
 
 ## Installation
@@ -102,14 +101,6 @@ To use environment variables for configuration, follow these steps:
    ```shell
    nats req NOTIFICATION.viewed '{"id": 1, "is_view": true}'
    ```
-   
-## Notification Types and Priorities
-There are three types of system notifications, each with a different priority level:
-- Error: Highest priority. These notifications are sent first.
-- Warning: Medium priority. These notifications are sent after error notifications.
-- Info: Lowest priority. These notifications are sent last.
-
-If there is a list of notification that are received simultaneously, the client will receive this list in the following order as [described](#notification-types-and-priorities)
 
 ## Example Client
 Here's a simple example of a client connecting to the WebSocket server and handling messages:
