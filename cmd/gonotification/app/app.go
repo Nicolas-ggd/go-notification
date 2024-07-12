@@ -8,16 +8,16 @@ package app
 import (
 	"database/sql"
 	"flag"
-	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
 	"github.com/Nicolas-ggd/go-notification/pkg/microhandler"
 	"github.com/Nicolas-ggd/go-notification/pkg/queue"
 	"github.com/Nicolas-ggd/go-notification/pkg/repository"
+	"github.com/Nicolas-ggd/go-notification/pkg/server"
+	"github.com/Nicolas-ggd/go-notification/pkg/server/ws"
 	"github.com/Nicolas-ggd/go-notification/pkg/services"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/micro"
 	"log"
-	"net/http"
 	"os"
 )
 
@@ -61,12 +61,8 @@ func Run() {
 
 	microServices(nc, notificationHandler)
 
-	http.HandleFunc("GET /ws", wss.ServeWs)
+	server.NewServer(wss, httpPort)
 
-	err = http.ListenAndServe(":"+*httpPort, nil)
-	if err != nil {
-		log.Fatal(err)
-	}
 }
 
 // todo: move each service in one package and manage it
