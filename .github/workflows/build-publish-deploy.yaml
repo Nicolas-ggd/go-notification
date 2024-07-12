@@ -8,41 +8,56 @@ on:
       - 'main'
 
 jobs:
-  deploy:
+# Temporary disable this job, because application isn't stable yet to deploy, instead we can check syntax validation
+#  deploy:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        uses: actions/checkout@v2
+#
+#      - name: Load .env file
+#        run: source ./build/load_env.sh
+#
+#      - name: Build Docker image
+#        run: docker build --build-arg "NATS_URL"=$NATS_URL -t go-notifications:latest .
+#
+#      - name: Save Docker image as tar file
+#        run: docker save -o go-notifications.tar go-notifications:latest
+#
+#      - name: Transfer Docker image to remote server
+#        run: |
+#          mkdir -p ~/.ssh
+#          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
+#          chmod 600 ~/.ssh/id_rsa
+#          scp -o StrictHostKeyChecking=no go-notifications.tar $REMOTE_SERVER_USERNAME@$REMOTE_SERVER_ADDRESS:$REMOTE_SERVER_PATH
+#
+#      - name: Load Docker image on remote server
+#        run: |
+#          ssh -o StrictHostKeyChecking=no $REMOTE_SERVER_USERNAME@$REMOTE_SERVER_ADDRESS << 'ENDSSH'
+#          docker load -i /$REMOTE_SERVER_PATH/go-notifications.tar
+#          ENDSSH
+#
+#      - name: Transfer Docker Compose file to remote server
+#        run: |
+#          scp -o StrictHostKeyChecking=no docker-compose.yaml $REMOTE_SERVER_USERNAME@$REMOTE_SERVER_ADDRESS:$REMOTE_SERVER_PATH
+#
+#      - name: Deploy Docker containers using Docker Compose on remote server
+#        run: |
+#          ssh -o StrictHostKeyChecking=no $REMOTE_SERVER_USERNAME@$REMOTE_SERVER_ADDRESS << 'ENDSSH'
+#          docker compose -f $REMOTE_SERVER_PATH/docker-compose.yaml up -d
+#          ENDSSH
+  # Lint job for Go code
+  lint:
+    name: Lint Go Code
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Load .env file
-        run: source ./build/load_env.sh
-
-      - name: Build Docker image
-        run: docker build --build-arg "NATS_URL"=$NATS_URL -t go-notifications:latest .
-
-      - name: Save Docker image as tar file
-        run: docker save -o go-notifications.tar go-notifications:latest
-
-      - name: Transfer Docker image to remote server
-        run: |
-          mkdir -p ~/.ssh
-          echo "$PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          scp -o StrictHostKeyChecking=no go-notifications.tar $REMOTE_SERVER_USERNAME@$REMOTE_SERVER_ADDRESS:$REMOTE_SERVER_PATH
-
-      - name: Load Docker image on remote server
-        run: |
-          ssh -o StrictHostKeyChecking=no $REMOTE_SERVER_USERNAME@$REMOTE_SERVER_ADDRESS << 'ENDSSH'
-          docker load -i /$REMOTE_SERVER_PATH/go-notifications.tar
-          ENDSSH
-
-      - name: Transfer Docker Compose file to remote server
-        run: |
-          scp -o StrictHostKeyChecking=no docker-compose.yaml $REMOTE_SERVER_USERNAME@$REMOTE_SERVER_ADDRESS:$REMOTE_SERVER_PATH
-
-      - name: Deploy Docker containers using Docker Compose on remote server
-        run: |
-          ssh -o StrictHostKeyChecking=no $REMOTE_SERVER_USERNAME@$REMOTE_SERVER_ADDRESS << 'ENDSSH'
-          docker compose -f $REMOTE_SERVER_PATH/docker-compose.yaml up -d
-          ENDSSH
+      - uses: actions/checkout@v3 # Checks out the code
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.22' # Sets up Go 1.22
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.54 # Uses golangci-lint version 1.54
