@@ -1,5 +1,7 @@
 # TODO List for Notification Microservice
 
+## Everyone can edit and add todo item in this list
+
 ## High Priority
 1. **[ ] Client connection with WS**
    - **Description**: When Client send handshake(HTTP Upgrade), maybe it's better to use JWT token for that, in that case, we need to validate received JWT token and if it's valid then open connection between Client and Server. Here is basic illustration:
@@ -7,6 +9,8 @@
 
 2. **[ ] Split NATS event functions**
    - **Description**: We need to find place for micro.AddService, now it lives in main.go under the `microServices` function.
-3. **[ ] Write test cases for WS handler**
+
+## Medium Priority
+1. **[ ] Write test cases for WS handler**
    - **Description**: Any testing way is acceptable, you're applied to write test cases using `testify` package, or just use golang build-in package.
     
