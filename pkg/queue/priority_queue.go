@@ -14,9 +14,9 @@ type PriorityQueue struct {
 	mutex        sync.Mutex
 }
 
-func (pq PriorityQueue) Len() int { return len(pq.notification) }
+func (pq *PriorityQueue) Len() int { return len(pq.notification) }
 
-func (pq PriorityQueue) Less(i, j int) bool {
+func (pq *PriorityQueue) Less(i, j int) bool {
 	priorities := map[string]int{
 		"error":   1,
 		"warning": 2,
@@ -26,7 +26,7 @@ func (pq PriorityQueue) Less(i, j int) bool {
 	return priorities[pq.notification[i].Type] > priorities[pq.notification[j].Type]
 }
 
-func (pq PriorityQueue) Swap(i, j int) {
+func (pq *PriorityQueue) Swap(i, j int) {
 	pq.notification[i], pq.notification[j] = pq.notification[j], pq.notification[i]
 }
 
