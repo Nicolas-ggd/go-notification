@@ -2,7 +2,7 @@
 This microservice is designed to handle system notifications using Go, NATS, and WebSocket. Clients can connect via WebSocket and receive notifications either for all users or for specific clients.
 
 ## Features
-- WebSocket Connectivity: It lets clients to access the service over WebSocket.
+- WebSocket Connectivity: It lets clients access the service over WebSocket.
 - Broadcast Notifications: Messages are sent to all connected clients.
 - Targeted Notifications: Messages are sent to specific clients.
 - Priority Notifications: Notifications have different types and priorities (error, warning, info).
