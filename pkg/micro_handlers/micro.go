@@ -89,14 +89,22 @@ func (mh *MicroHandler) ClientBasedNotification() micro.HandlerFunc {
 }
 
 func (mh *MicroHandler) NotificationList() micro.HandlerFunc {
-	metadata := &metakit.Metadata{Sort: "id"}
+	metadata := &metakit.Metadata{Sort: "time", SortDirection: "desc"}
 	return func(r micro.Request) {
-		model, _, err := mh.NotificationService.List(metadata)
+		model, meta, err := mh.NotificationService.List(metadata)
 		if err != nil {
 			log.Println(err)
 		}
 
+		notificationList := &request.NotificationWithMetadata{
+			Data:     model,
+			Metadata: meta,
+		}
+
 		fmt.Printf("%+v\n", model)
+		fmt.Printf("%+v\n", meta)
+
+		mh.wss.BroadcastListEvent(notificationList)
 	}
 }
 

@@ -50,6 +50,13 @@ func (r *NotificationRepository) List(meta *metakit.Metadata) (*[]models.Notific
 	meta.SortDirectionParams()
 	for rows.Next() {
 		var item models.Notification
+
+		// scan records
+		err = rows.Scan(&item.ID, &item.Type, &item.Time, &item.Message, &item.IsView)
+		if err != nil {
+			return nil, nil, err
+		}
+
 		model = append(model, item)
 	}
 

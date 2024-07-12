@@ -2,6 +2,7 @@ package request
 
 import (
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
+	metakit "github.com/Nicolas-ggd/gorm-metakit"
 	"time"
 )
 
@@ -17,6 +18,11 @@ type NotificationRequest struct {
 type IsViewNotificationRequest struct {
 	ID     uint `json:"id"`
 	IsView bool `json:"is_view"`
+}
+
+type NotificationWithMetadata struct {
+	Data     *[]models.Notification `json:"data"`
+	Metadata *metakit.Metadata      `json:"metadata"`
 }
 
 type ViewNotificationRequest struct {
