@@ -16,7 +16,7 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Load .env file
-        run: source load_env.sh
+        run: source ./build/load_env.sh
 
       - name: Build Docker image
         run: docker build --build-arg "NATS_URL"=$NATS_URL -t go-notifications:latest .
