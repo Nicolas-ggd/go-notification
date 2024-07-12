@@ -33,13 +33,13 @@ You can configure the application using command-line arguments. The following pa
 
 Example:
 ```bash
-  go run ./cmd/api http-server-port=5432 nats-url=nats://127.0.0.1:4222
+  go run ./cmd/go-notification http-server-port=5432 nats-url=nats://127.0.0.1:4222
 ```
 
 ## Usage
 Start the service with the following command:
 ```bash
-  go run ./cmd/api http-server-port=5432 nats-url=nats://127.0.0.1:4222
+  go run ./cmd/go-notification http-server-port=5432 nats-url=nats://127.0.0.1:4222
 ```
 
 ## Environment Variables
@@ -65,7 +65,7 @@ To use environment variables for configuration, follow these steps:
    ```json
    {
      "type": "broadcast",
-     "message": "This is a broadcast notification.",
+     "message": "This is a broadcast go-notification.",
      "time": "2024-04-17T09:00:00Z",
      "is_view": false
    }
@@ -78,7 +78,7 @@ To use environment variables for configuration, follow these steps:
    {
      "type": "targeted",
      "clients": ["1", "2"],
-     "message": "This is a targeted notification.",
+     "message": "This is a targeted go-notification.",
      "time": "2024-04-17T09:00:00Z",
      "is_view": false
    }
