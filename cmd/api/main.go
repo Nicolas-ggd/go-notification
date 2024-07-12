@@ -5,6 +5,7 @@ import (
 	"flag"
 	"github.com/Nicolas-ggd/go-notification/pkg/http/ws"
 	handlers "github.com/Nicolas-ggd/go-notification/pkg/micro_handlers"
+	"github.com/Nicolas-ggd/go-notification/pkg/queue"
 	"github.com/Nicolas-ggd/go-notification/pkg/repository"
 	"github.com/Nicolas-ggd/go-notification/pkg/services"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage"
@@ -44,12 +45,16 @@ func main() {
 
 	wss := ws.NewWebsocket()
 
+	go wss.Run()
+
+	priorityQueue := queue.NewPriorityQueue()
+
 	repositories := repository.NewRepository(db)
 	service := services.NewService(repositories)
 
-	notificationHandler := handlers.NewMicroHandler(service)
+	notificationHandler := handlers.NewMicroHandler(service, priorityQueue, wss)
 
-	microServices(nc, wss, notificationHandler)
+	microServices(nc, notificationHandler)
 
 	http.HandleFunc("GET /ws", wss.ServeWs)
 
@@ -59,12 +64,12 @@ func main() {
 	}
 }
 
-func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHandler) {
+func microServices(nc *nats.Conn, handler *handlers.MicroHandler) {
 	_, err := micro.AddService(nc, micro.Config{
 		Name: handlers.StreamName,
 		Endpoint: &micro.EndpointConfig{
 			Subject:    handlers.SubjectBroadcastNotification,
-			Handler:    handler.BroadcastNotification(wss),
+			Handler:    handler.BroadcastNotification(),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
@@ -79,7 +84,7 @@ func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHand
 		Name: handlers.StreamName,
 		Endpoint: &micro.EndpointConfig{
 			Subject:    handlers.SubjectClientNotification,
-			Handler:    handler.ClientBasedNotification(wss),
+			Handler:    handler.ClientBasedNotification(),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
@@ -94,7 +99,7 @@ func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHand
 		Name: handlers.StreamName,
 		Endpoint: &micro.EndpointConfig{
 			Subject:    handlers.SubjectNotificationList,
-			Handler:    handler.NotificationList(wss),
+			Handler:    handler.NotificationList(),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
@@ -109,7 +114,7 @@ func microServices(nc *nats.Conn, wss *ws.Websocket, handler *handlers.MicroHand
 		Name: handlers.StreamName,
 		Endpoint: &micro.EndpointConfig{
 			Subject:    handlers.SubjectNotificationViewed,
-			Handler:    handler.NotificationViewed(wss),
+			Handler:    handler.NotificationViewed(),
 			Metadata:   nil,
 			QueueGroup: "",
 		},
