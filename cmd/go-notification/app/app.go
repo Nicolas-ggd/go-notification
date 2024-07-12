@@ -1,4 +1,9 @@
-package main
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2024 TOMIOKA
+//
+// This file is part of the go-notification project.
+
+package app
 
 import (
 	"database/sql"
@@ -16,7 +21,7 @@ import (
 	"os"
 )
 
-func main() {
+func Run() {
 	httpPort := flag.String("http-server-port", "8741", "a string")
 	natsUrl := flag.String("nats-url", "nats://nats:4222", "a string")
 
@@ -64,6 +69,7 @@ func main() {
 	}
 }
 
+// todo: move each service in one package and manage it
 func microServices(nc *nats.Conn, handler *handlers.MicroHandler) {
 	_, err := micro.AddService(nc, micro.Config{
 		Name: handlers.StreamName,
