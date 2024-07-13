@@ -15,8 +15,6 @@ import (
 	"github.com/Nicolas-ggd/go-notification/pkg/server/ws"
 	"github.com/Nicolas-ggd/go-notification/pkg/services"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage"
-	"github.com/nats-io/nats.go"
-	"github.com/nats-io/nats.go/micro"
 	"log"
 	"os"
 )
@@ -59,71 +57,8 @@ func Run() {
 
 	notificationHandler := microhandler.NewMicroHandler(service, priorityQueue, wss)
 
-	microServices(nc, notificationHandler)
+	microhandler.MicroServices(nc, notificationHandler)
 
 	server.NewServer(wss, httpPort)
 
-}
-
-// todo: move each service in one package and manage it
-func microServices(nc *nats.Conn, handler *microhandler.MicroHandler) {
-	_, err := micro.AddService(nc, micro.Config{
-		Name: microhandler.StreamName,
-		Endpoint: &micro.EndpointConfig{
-			Subject:    microhandler.SubjectBroadcastNotification,
-			Handler:    handler.BroadcastNotification(),
-			Metadata:   nil,
-			QueueGroup: "",
-		},
-		Version:     microhandler.SubjectVersion,
-		Description: "",
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = micro.AddService(nc, micro.Config{
-		Name: microhandler.StreamName,
-		Endpoint: &micro.EndpointConfig{
-			Subject:    microhandler.SubjectClientNotification,
-			Handler:    handler.ClientBasedNotification(),
-			Metadata:   nil,
-			QueueGroup: "",
-		},
-		Version:     microhandler.SubjectVersion,
-		Description: "",
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = micro.AddService(nc, micro.Config{
-		Name: microhandler.StreamName,
-		Endpoint: &micro.EndpointConfig{
-			Subject:    microhandler.SubjectNotificationList,
-			Handler:    handler.NotificationList(),
-			Metadata:   nil,
-			QueueGroup: "",
-		},
-		Version:     microhandler.SubjectVersion,
-		Description: "",
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	_, err = micro.AddService(nc, micro.Config{
-		Name: microhandler.StreamName,
-		Endpoint: &micro.EndpointConfig{
-			Subject:    microhandler.SubjectNotificationViewed,
-			Handler:    handler.NotificationViewed(),
-			Metadata:   nil,
-			QueueGroup: "",
-		},
-		Version:     microhandler.SubjectVersion,
-		Description: "",
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
 }
