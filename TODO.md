@@ -10,9 +10,6 @@
 2. **[ ] Split NATS event functions**
    - **Description**: We need to find place for micro.AddService, now it lives in `./cmd/gonotification/app/app.go` file, under the `microServices` function.
 
-3. **[ ] HTTP server configuration under the configuration level**
-   - **Description**: It's better to give user possibility to choose use HTTP/1.1 or HTTP/2. Case where user choose to use HTTP/2 we need to accept and parse `PRIVATE KEY` and `Certificate` for HTTP/2. In this case we need `shell` script logic.
-
 ## Medium Priority
 1. **[ ] Write test cases for WS handler**
    - **Description**: Any testing way is acceptable, you're applied to write test cases using `testify` package, or just use golang build-in package.
