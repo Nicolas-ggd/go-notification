@@ -124,7 +124,7 @@ There are three types of system notifications, each with a different priority le
 If there is a list of notification that are received simultaneously, the client will receive this list in the following order as [described](#notification-types-and-priorities)
 
 This illustration shows Notification list before and after sorting according to priority types:
-
+<img width="971" alt="Screenshot 2024-07-15 at 12 27 46" src="https://github.com/user-attachments/assets/ecc4947b-9b78-4e07-91b5-2273090a8a16">
 
 ## Example Client
 Here's a simple example of a client connecting to the WebSocket server and handling messages:
