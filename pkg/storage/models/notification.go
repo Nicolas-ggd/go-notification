@@ -1,3 +1,8 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2024 TOMIOKA
+//
+// This file is part of the gonotification project.
+
 package models
 
 import "time"
@@ -15,5 +20,4 @@ type Notification struct {
 	Type    string    `json:"type"`
 	Message string    `json:"message"`
 	Time    time.Time `json:"time"`
-	IsView  bool      `json:"is_view"`
 }

@@ -11,7 +11,6 @@ import (
 	"log"
 )
 
-// todo: move each service in one package and manage it
 func MicroServices(nc *nats.Conn, handler *MicroHandler) {
 	_, err := micro.AddService(nc, micro.Config{
 		Name: StreamName,
@@ -58,18 +57,4 @@ func MicroServices(nc *nats.Conn, handler *MicroHandler) {
 		log.Fatal(err)
 	}
 
-	_, err = micro.AddService(nc, micro.Config{
-		Name: StreamName,
-		Endpoint: &micro.EndpointConfig{
-			Subject:    SubjectNotificationViewed,
-			Handler:    handler.NotificationViewed(),
-			Metadata:   nil,
-			QueueGroup: "",
-		},
-		Version:     SubjectVersion,
-		Description: "",
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
 }

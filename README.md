@@ -58,17 +58,26 @@ To use environment variables for configuration, follow these steps:
    ./load_env.sh
    ```
    
-### Sending Notifications
+## Sending Notifications
 1. Broadcast Notification:
    Send a message to all connected clients.
 
    ```json
    {
-     "type": "broadcast",
+     "type": "error",
      "message": "This is a broadcast go-notification.",
-     "time": "2024-04-17T09:00:00Z",
-     "is_view": false
+     "time": "2024-04-17T09:00:00Z"
    }
+   ```
+   
+   #### Response JSON should be like:
+   ```json
+    {
+      "id": 1,
+      "type": "error",
+      "message": "This is a broadcast go-notification.",
+      "time": "2024-04-17T09:00:00Z"
+    }
    ```
 
 2. Targeted Notification:
@@ -76,33 +85,36 @@ To use environment variables for configuration, follow these steps:
 
    ```json
    {
-     "type": "targeted",
+     "type": "warning",
      "clients": ["1", "2"],
      "message": "This is a targeted go-notification.",
-     "time": "2024-04-17T09:00:00Z",
-     "is_view": false
+     "time": "2024-04-17T09:00:00Z"
    }
    ```
+
+   #### Response JSON should be like:
+      ```json
+       {
+         "id": 1,
+         "type": "warning",
+         "message": "This is a broadcast go-notification.",
+         "time": "2024-04-17T09:00:00Z"
+       }
+      ```
    
 3. Command line notification request using NATS:
    Send a message to all connected clients
    
    ```shell
-   nats req NOTIFICATION.send-to-all '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "is_view": true}'
+   nats req NOTIFICATION.send-to-all '{"type": "error", "message": "example", "time": "2024-04-17T09:00:00Z"}'
    ```
    
    Send a message to specific clients
 
    ```shell
-   nats req NOTIFICATION.send-to-clients '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "clients": ["1", "2"], "is_view": false}'
+   nats req NOTIFICATION.send-to-clients '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "clients": ["1", "2"]}'
    ```
 
-   Notification is viewed, so send event to update record
-   
-   ```shell
-   nats req NOTIFICATION.viewed '{"id": 1, "is_view": true}'
-   ```
-   
 ## Notification Types and Priorities
 There are three types of system notifications, each with a different priority level:
 - Error: Highest priority. These notifications are sent first.
@@ -110,6 +122,9 @@ There are three types of system notifications, each with a different priority le
 - Info: Lowest priority. These notifications are sent last.
 
 If there is a list of notification that are received simultaneously, the client will receive this list in the following order as [described](#notification-types-and-priorities)
+
+This illustration shows Notification list before and after sorting according to priority types:
+
 
 ## Example Client
 Here's a simple example of a client connecting to the WebSocket server and handling messages:
