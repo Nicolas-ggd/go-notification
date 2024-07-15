@@ -13,7 +13,6 @@ import (
 )
 
 type RepositorySuite struct {
-	db *sql.DB
 	suite.Suite
 }
 
