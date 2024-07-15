@@ -67,6 +67,8 @@ Start the service with the following command:
   go run ./cmd/gonotification http-server-port=5432 nats-url=nats://127.0.0.1:4222
 ```
 
+**Note**: Before start the application you can run all test cases, using `make test` command
+
 ## Environment Variables
 This application uses `.env` file for Github Actions, so you need to configure environment variables, follow these steps:
 
