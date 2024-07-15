@@ -1,6 +1,11 @@
 # Notification Microservice
 This microservice is designed to handle system notifications using Go, NATS, and WebSocket. Clients can connect via WebSocket and receive notifications either for all users or for specific clients.
 
+go-notification is designed to be a helpful app, if you have system alert, notifications, so on... in your app that your users need to know, then this app is for you.
+go-notification automatically sorts all notifications according to their type, the notification with the highest priority will be sent to the user first before the rest of the notifications.
+The way you can communicate with the application is through NATS, and the application itself will communicate with the client using WebSocket
+
+
 ## Features
 - WebSocket Connectivity: It lets clients access the service over WebSocket.
 - Broadcast Notifications: Messages are sent to all connected clients.
@@ -25,11 +30,31 @@ This microservice is designed to handle system notifications using Go, NATS, and
    ```bash
      go mod download
    ```
+   
+4. Install NATS (if not already installed):
+
+   NATS is a lightweight, high-performance messaging system. You can install NATS using the following methods:
+
+   - Homebrew (macOS):
+   ```bash
+     brew install nats-server
+   ```
+   - Docker run:
+
+   ```bash
+    docker run -d --name nats-server -p 4222:4222 nats
+   ```
+   
+   Or see full [NATS installation documentation](https://nats.io/download/)
 
 ## Configuration
 You can configure the application using command-line arguments. The following parameters are available:
-- --nats-url: The URL of the NATS server (default: nats://nats:4222).
-- --http-server-port: The port for the HTTP server (default: 8741).
+- nats-url: The URL of the NATS server (default: nats://nats:4222).
+   
+   By default, nats provide `DefaultURL` which is possible to use during the development mode, after you deploy application on the server, you need to provide new `NATS Connection URL` because `DefaultURL` is no longer available, that's why this command flag is provided
+- http-server-port: The port for the HTTP server (default: 8741).
+
+   While it's possible to duplicate HTTP server port, it's good idea to configure it on command-line level
 
 Example:
 ```bash
@@ -59,7 +84,21 @@ To use environment variables for configuration, follow these steps:
    ```
    
 ## Sending Notifications
-1. Broadcast Notification:
+
+1. Command line notification request using NATS:
+   Send a message to all connected clients
+
+   ```shell
+   nats req NOTIFICATION.send-to-all '{"type": "error", "message": "example", "time": "2024-04-17T09:00:00Z"}'
+   ```
+
+   Send a message to specific clients
+
+   ```shell
+   nats req NOTIFICATION.send-to-clients '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "clients": ["1", "2"]}'
+   ```
+   
+2. Broadcast Notification:
    Send a message to all connected clients.
 
    ```json
@@ -80,7 +119,7 @@ To use environment variables for configuration, follow these steps:
     }
    ```
 
-2. Targeted Notification:
+3. Targeted Notification:
    Send a message to specific clients.
 
    ```json
@@ -101,19 +140,6 @@ To use environment variables for configuration, follow these steps:
          "time": "2024-04-17T09:00:00Z"
        }
       ```
-   
-3. Command line notification request using NATS:
-   Send a message to all connected clients
-   
-   ```shell
-   nats req NOTIFICATION.send-to-all '{"type": "error", "message": "example", "time": "2024-04-17T09:00:00Z"}'
-   ```
-   
-   Send a message to specific clients
-
-   ```shell
-   nats req NOTIFICATION.send-to-clients '{"type": "warning", "message": "example", "time": "2024-04-17T09:00:00Z", "clients": ["1", "2"]}'
-   ```
 
 ## Notification Types and Priorities
 There are three types of system notifications, each with a different priority level:
@@ -126,9 +152,16 @@ If there is a list of notification that are received simultaneously, the client 
 This illustration shows Notification list before and after sorting according to priority types:
 <img width="971" alt="Screenshot 2024-07-15 at 12 27 46" src="https://github.com/user-attachments/assets/ecc4947b-9b78-4e07-91b5-2273090a8a16">
 
+- Notification whose type is error is evaluated with priority 1
+- Notification of warning type is evaluated with priority 2
+- Notification of info type is evaluated with priority 3
+
+**Note**: that ordering and sending notifications by priority only works when you send multiple notifications in the application at the same time.
+
 ## Example Client
 Here's a simple example of a client connecting to the WebSocket server and handling messages:
 
+**NOTE**: Client side isn't stable yet, application is during the development
 ```javascript
 const socket = new WebSocket('ws://localhost:8080/ws');
 
