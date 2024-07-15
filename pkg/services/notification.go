@@ -1,16 +1,19 @@
+// SPDX-License-Identifier: MIT
+// Copyright (c) 2024 TOMIOKA
+//
+// This file is part of the gonotification project.
+
 package services
 
 import (
 	"github.com/Nicolas-ggd/go-notification/pkg/repository"
 	"github.com/Nicolas-ggd/go-notification/pkg/storage/models"
-	"github.com/Nicolas-ggd/go-notification/pkg/storage/models/request"
 	metakit "github.com/Nicolas-ggd/gorm-metakit"
 )
 
 type INotificationService interface {
 	Insert(model *models.Notification) (*models.Notification, error)
 	List(meta *metakit.Metadata) (*[]models.Notification, *metakit.Metadata, error)
-	Update(model *request.IsViewNotificationRequest) error
 }
 
 type NotificationService struct {
@@ -39,13 +42,4 @@ func (ns *NotificationService) List(meta *metakit.Metadata) (*[]models.Notificat
 	}
 
 	return model, meta, nil
-}
-
-func (ns *NotificationService) Update(model *request.IsViewNotificationRequest) error {
-	err := ns.notificationRepository.Update(model.ToModel())
-	if err != nil {
-		return err
-	}
-
-	return nil
 }

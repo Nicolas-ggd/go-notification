@@ -53,7 +53,6 @@ func (mh *MicroHandler) BroadcastNotification() micro.HandlerFunc {
 				Type:    model.Type,
 				Message: model.Message,
 				Time:    model.Time,
-				IsView:  model.IsView,
 			})
 		}
 
@@ -83,7 +82,6 @@ func (mh *MicroHandler) ClientBasedNotification() micro.HandlerFunc {
 				Type:    model.Type,
 				Message: model.Message,
 				Time:    model.Time,
-				IsView:  model.IsView,
 				Clients: notification.Clients,
 			})
 		}
@@ -105,22 +103,6 @@ func (mh *MicroHandler) NotificationList() micro.HandlerFunc {
 	}
 }
 
-func (mh *MicroHandler) NotificationViewed() micro.HandlerFunc {
-	return func(r micro.Request) {
-		var m request.IsViewNotificationRequest
-
-		err := json.Unmarshal(r.Data(), &m)
-		if err != nil {
-			log.Println(err)
-		}
-
-		err = mh.NotificationService.Update(&m)
-		if err != nil {
-			log.Println(err)
-		}
-	}
-}
-
 func (mh *MicroHandler) processQueue() {
 	for mh.PriorityQueue.Len() > 0 {
 		notification := mh.PriorityQueue.Pop().(*queue.NotificationHeap)
@@ -129,7 +111,6 @@ func (mh *MicroHandler) processQueue() {
 			Type:    notification.Type,
 			Message: notification.Message,
 			Time:    notification.Time,
-			IsView:  notification.IsView,
 		}
 
 		// check if there are specific clients to send the gonotification to
