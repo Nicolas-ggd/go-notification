@@ -43,7 +43,7 @@ Start the service with the following command:
 ```
 
 ## Environment Variables
-To use environment variables for configuration, follow these steps:
+This application uses `.env` file for Github Actions, so you need to configure environment variables, follow these steps:
 
 1. Copy the .env.example file to .env and fill in your environment variables:
 
@@ -51,6 +51,8 @@ To use environment variables for configuration, follow these steps:
    cp .env.example .env
    nano .env
    ```
+
+Check `.env.example` file to known which environment variable you need to deploy applicaiton
 
 2. After creating environment file, load the environment variables:
 
