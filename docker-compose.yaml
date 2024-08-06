@@ -11,6 +11,20 @@ services:
     command: "--cluster_name NATS --cluster nats://0.0.0.0:6222 --http_port 8222 "
     networks:
       - fullstack
+  postgres:
+    networks:
+      - fullstack
+    image: postgres:14-alpine
+    ports:
+      - '5432'
+    volumes:
+      - postgres_db:/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=localhost
+
   app:
     networks:
       - fullstack
@@ -25,7 +39,4 @@ services:
       - nats
 volumes:
   api:
-  redis_db:
   postgres_db:
-  minio_data:
-    driver: local
