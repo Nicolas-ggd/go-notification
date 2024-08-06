@@ -51,10 +51,7 @@ The way you can communicate with the application is through NATS, and the applic
 You can configure the application using command-line arguments. The following parameters are available:
 - nats-url: The URL of the NATS server (default: nats://nats:4222).
    
-   By default, nats provide `DefaultURL` which is possible to use during the development mode, after you deploy application on the server, you need to provide new `NATS Connection URL` because `DefaultURL` is no longer available, instead you need to provide `NATS URL` which is described on `docker-compose.yaml` file, that's why this command flag is provided
 - http-server-port: The port for the HTTP server (default: 8741).
-
-   While it's possible to duplicate HTTP server port, it's good idea to configure it on command-line level
 
 Example:
 ```bash
