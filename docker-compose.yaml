@@ -1,4 +1,5 @@
-version: "4.9"
+# You can modify related services as you want
+
 networks:
   fullstack:
     driver: bridge
