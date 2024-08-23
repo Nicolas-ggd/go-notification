@@ -1,10 +1,7 @@
 # Notification Microservice
 This microservice is designed to handle system notifications using Go, NATS, and WebSocket. Clients can connect via WebSocket and receive notifications either for all users or for specific clients.
 
-go-notification is designed to be a helpful app, if you have system alert, notifications, so on... in your app that your users need to know, then this app is for you.
-go-notification automatically sorts all notifications according to their type, the notification with the highest priority will be sent to the user first before the rest of the notifications.
-The way you can communicate with the application is through NATS, and the application itself will communicate with the client using WebSocket
-
+go-notification is a microservice designed to handle system notifications, making sure your users receive important alerts efficiently. With features like WebSocket connectivity, priority-based message handling, and easy integration with NATS, this service is perfect for apps that need robust notification handling.
 
 ## Features
 - WebSocket Connectivity: It lets clients access the service over WebSocket.
@@ -48,9 +45,8 @@ The way you can communicate with the application is through NATS, and the applic
    Or see full [NATS installation documentation](https://nats.io/download/)
 
 ## Configuration
-You can configure the application using command-line arguments. The following parameters are available:
+Configure the service using command-line arguments:
 - nats-url: The URL of the NATS server (default: nats://nats:4222).
-   
 - http-server-port: The port for the HTTP server (default: 8741).
 
 Example:
@@ -64,8 +60,10 @@ Start the service with the following command:
   go run ./cmd/gonotification http-server-port=5432 nats-url=nats://127.0.0.1:4222
 ```
 
-**Note**: Before start the application you can run all test cases, using `make test` command
-
+Before starting, you can run all tests:
+```bash
+  make test
+```
 ## Environment Variables
 This application uses `.env` file for Github Actions, so you need to configure environment variables, follow these steps:
 
