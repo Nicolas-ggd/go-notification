@@ -1,4 +1,5 @@
-# Notification Microservice
+# REPOSITORY IS NO LONGER ACTIVE
+## Notification Microservice
 This microservice is designed to handle system notifications using Go, NATS, and WebSocket. Clients can connect via WebSocket and receive notifications either for all users or for specific clients.
 
 go-notification is a microservice designed to handle system notifications, making sure your users receive important alerts efficiently. With features like WebSocket connectivity, priority-based message handling, and easy integration with NATS, this service is perfect for apps that need robust notification handling.
